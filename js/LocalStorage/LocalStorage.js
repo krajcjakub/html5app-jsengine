@@ -9,7 +9,8 @@
 function LocalStorage(DSO){
 	this.dso = DSO; //Data Sync Object
 
-	this.ls = new LocalStorageWebSQL();
+	//this.ls = new LocalStorageWebSQL();
+	this.ls = new LocalStorageIndexedDb();
 
 	var self = this;
 
@@ -32,5 +33,9 @@ function LocalStorage(DSO){
 
 	this.remove = function(dataObj, okcallback, kocallback){
 		self.ls.remove(dataObj, okcallback, kocallback);
+	}
+
+	this.empty = function(dataObj, okcallback, kocallback){
+		self.ls.empty(dataObj, okcallback, kocallback);
 	}
 }

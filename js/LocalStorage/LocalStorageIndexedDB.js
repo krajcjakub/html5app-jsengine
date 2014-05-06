@@ -121,7 +121,7 @@ function LocalStorageIndexedDb(){
 		var storeName = dataObj.table;
 		var id = dataObj.id;
 
-		var transaction = self.db.transaction([storeName],"readonly");
+		var transaction = self.db.transaction([storeName],"readwrite");
 		var store = transaction.objectStore(storeName);
 
 		var request = store.delete(dataObj.id);
@@ -136,7 +136,29 @@ function LocalStorageIndexedDb(){
 			/*var result = e.target.result;
 			result.id = id;*/
 			if (typeof okcallback !== "undefined") {
-				okcallback(result);
+				okcallback();
+			}
+		}
+		
+	}
+
+	this.empty = function(dataObj, okcallback, kocallback){
+		var storeName = dataObj.table;
+
+		var transaction = self.db.transaction([storeName],"readwrite");
+		var store = transaction.objectStore(storeName);
+
+		var request = store.clear();
+
+		request.onerror = function(e) {
+			if (typeof kocallback !== "undefined") {
+				kocallback();
+			}
+		}
+
+		request.onsuccess = function(e) {
+			if (typeof okcallback !== "undefined") {
+				okcallback();
 			}
 		}
 		

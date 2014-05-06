@@ -153,4 +153,22 @@ function LocalStorageWebSQL(){
 			}
 		});		
 	}
+
+	this.empty = function(dataObj, okcallback, kocallback){
+		var storeName = dataObj.table;
+
+		self.db.transaction(function (tx) {  
+			tx.executeSql(
+				"DELETE FROM "+storeName+"");
+		},function(e){
+			console.log("kocallback");
+			if (typeof kocallback !== "undefined") {
+				kocallback();
+			}
+		},function(e){
+			if (typeof okcallback !== "undefined") {				
+				okcallback();
+			}
+		});		
+	}
 }
