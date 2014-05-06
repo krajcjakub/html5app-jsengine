@@ -4,6 +4,7 @@
 	<title>data sync</title>
 	<script src="js/LocalStorage/LocalStorage.js"></script>
 	<script src="js/LocalStorage/LocalStorageIndexedDB.js"></script>
+	<script src="js/LocalStorage/LocalStorageWebSQL.js"></script>
 	<script src="js/DataSync/DataSync.js"></script>
 	<script src="js/DataSync/SyncLogger.js"></script>
 	<script>
@@ -72,10 +73,13 @@
 	/*	----------------------------------
 		Page scripts
 		---------------------------------- */
+		var DSO;
+		var LStorage;
+
 		window.onload = function(){
-			var DSO = new DataSyncObj();
+			DSO = new DataSyncObj();
 	
-			var LStorage = new LocalStorage(DSO);
+			LStorage = new LocalStorage(DSO);
 			setTimeout(function(){
 				ReloadCars();
 				//DSO.pullFromRemote();

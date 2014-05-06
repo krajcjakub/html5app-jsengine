@@ -9,7 +9,7 @@
 function LocalStorage(DSO){
 	this.dso = DSO; //Data Sync Object
 
-	this.ls = new LocalStorageIndexedDb();
+	this.ls = new LocalStorageWebSQL();
 
 	var self = this;
 
