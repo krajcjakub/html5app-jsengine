@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>data sync</title>
+	<script>
+
+	/*	----------------------------------
+		Local storage abstract object
+		---------------------------------- */
+		
+
+		function LocalStorage(DSO){
+			this.dso = DSO;
+			this.opId = 1;
+			this.ls = new LocalStorageIndexedDb();
+
+			var self = this;
+
+			this.set = function(dataObj, okcallback, kocallback){
+				self.dso.addLocalChange(dataObj);
+				self.setQuietly(dataObj, okcallback, kocallback);
+			}
+
+			this.setQuietly = function(dataObj, okcallback, kocallback){
+				self.ls.set(dataObj, okcallback, kocallback);
+			}
+
+			this.get = function(dataObj, okcallback, kocallback){
+				self.ls.get(dataObj, okcallback, kocallback);
+			}
+
+			this.getAll = function(dataObj, okcallback, kocallback){
+				self.ls.getAll(dataObj, okcallback, kocallback);
+			}
+
+			this.remove = function(dataObj, okcallback, kocallback){
+				self.ls.remove(dataObj, okcallback, kocallback);
+			}
+		}
+
+	/*	----------------------------------
+		Local storage IndexedDb implementation
+		---------------------------------- */
+
+		function LocalStorageIndexedDb(){
+			this.openRequest = indexedDB.open("test2",1);
+			this.db = null;
+
+			var self = this;
+
+			this.openRequest.onupgradeneeded = function(e) {
+				console.log("Upgrading...");
+				var db = e.target.result;
+ 
+				if(!db.objectStoreNames.contains("cars")) {
+					db.createObjectStore("cars", { autoIncrement: true });
+				}
+
+				if(!db.objectStoreNames.contains("players")) {
+					db.createObjectStore("players", { autoIncrement: true });
+				}
+			}
+
+			this.openRequest.onsuccess = function(e) {
+				console.log("Success!");
+				self.db = e.target.result;
+			}
+
+			this.openRequest.onerror = function(e) {
+				console.log("Error");
+				console.dir(e);
+			}
+
+			this.set = function(dataObj, okcallback, kocallback){
+				var storeName = dataObj.table
+				delete dataObj.table;
+
+				var transaction = self.db.transaction([storeName],"readwrite");
+    			var store = transaction.objectStore(storeName);
+    			if(dataObj.id!=0){
+    				var request = store.put(dataObj, Number(dataObj.id));
+    			}else{
+    				delete dataObj.id;
+    				console.log(dataObj);
+    				var request = store.add(dataObj);
+    			}
+
+    			request.onerror = function(e) {
+    				if (typeof kocallback !== "undefined") {
+  						kocallback();
+					}
+				}
+
+				request.onsuccess = function(e) {
+					if (typeof okcallback !== "undefined") {
+						console.log("okcallback");
+  						okcallback();
+					}
+				}
+				
+			}
+
+			this.get = function(dataObj, okcallback, kocallback){
+				var storeName = dataObj.table;
+				var id = dataObj.id;
+
+				var transaction = self.db.transaction([storeName],"readonly");
+    			var store = transaction.objectStore(storeName);
+
+    			var request = store.get(dataObj.id);
+
+    			request.onerror = function(e) {
+    				if (typeof kocallback !== "undefined") {
+  						kocallback();
+					}
+				}
+
+				request.onsuccess = function(e) {
+					var result = e.target.result;
+					result.id = id;
+					if (typeof okcallback !== "undefined") {
+  						okcallback(result);
+					}
+				}
+				
+			}
+
+			this.getAll = function(dataObj, okcallback, kocallback){
+				var storeName = dataObj.table;
+				
+				//TODO: filter
+
+				var transaction = self.db.transaction([storeName],"readonly");
+				var store = transaction.objectStore(storeName);
+
+				var cursor = store.openCursor();
+
+				cursor.onerror = function(e) {
+    				if (typeof kocallback !== "undefined") {
+  						kocallback();
+					}
+				}
+
+				cursor.onsuccess = function(e) {
+					var res = e.target.result;
+					if(res) {
+						var result = res.value;
+						result.id = res.key;
+						if (typeof okcallback !== "undefined") {
+	  						okcallback(result);
+						}
+						res.continue();
+					}
+				}
+				
+			}
+
+			this.remove = function(dataObj, okcallback, kocallback){
+				var storeName = dataObj.table;
+				var id = dataObj.id;
+
+				var transaction = self.db.transaction([storeName],"readonly");
+				var store = transaction.objectStore(storeName);
+
+				var request = store.delete(dataObj.id);
+
+				request.onerror = function(e) {
+					if (typeof kocallback !== "undefined") {
+						kocallback();
+					}
+				}
+
+				request.onsuccess = function(e) {
+					/*var result = e.target.result;
+					result.id = id;*/
+					if (typeof okcallback !== "undefined") {
+  						okcallback(result);
+					}
+				}
+				
+			}
+		}
+
+	/*	----------------------------------
+		Synchronization logger object
+		---------------------------------- */
+
+		function SyncLogger(){
+			this.info = function(msg){
+				console.log(msg);
+			}
+		}
+
+	/*	----------------------------------
+		Data synchronization object
+		---------------------------------- */
+
+		function DataSyncObj(){
+			this.localChanges = new Array();
+			this.sl = new SyncLogger();
+			this.conected = false;
+			this.syncing = false;
+
+			var self = this;
+
+			this.waitForConnection = function(callback){
+				if(self.conected==true){
+					callback();
+				}else{
+					setTimeout(function(){self.waitForConnection(callback);},1000);
+				}
+			}
+
+			this.addLocalChange = function(dataObj){
+				if(self.syncing==false){
+					self.localChanges.push(dataObj);
+					self.syncToRemote();
+				}else{
+					self.localChanges.push(dataObj);
+				}
+			}
+
+			this.pushToRemote = function(dataObj,callback){
+				//TODO: realne ajaxové odoslanie na server
+				setTimeout(callback,1000);
+			}
+
+			this.pullFromRemote = function(){
+				//TODO: realne ajaxové stiahnutie so serveru
+				var data = [
+					{'table':'cars', 'id':1, 'name':'Ferari'},
+					{'table':'cars', 'id':2, 'name':'Audi'},
+					{'table':'cars', 'id':3, 'name':'traktor'},
+					{'table':'cars', 'id':4, 'name':'Seat'},
+					{'table':'cars', 'id':5, 'name':'Citroen'},
+					{'table':'cars', 'id':1, 'name':'Audi'},
+					{'table':'cars', 'id':4, 'name':'traktor'},
+					{'table':'cars', 'id':3, 'name':'Seat'},
+					{'table':'cars', 'id':2, 'name':'Citroen'}
+				]; 
+				setTimeout(function(){self.syncToLocal(data);},1000);
+			}
+
+			this.syncToRemote = function(){
+				//setSync to true
+				self.syncing = true; 
+
+				//wait for connection
+				if(self.conected==false){
+						self.waitForConnection(function(){self.syncToRemote();});
+						return false;
+				}else{
+					if(self.localChanges.length>0){
+						self.sl.info('Syncing to Remote. Pending '+self.localChanges.length +' operations');
+						rowObj = self.localChanges.shift();
+						self.pushToRemote(rowObj,function(){
+							self.syncToRemote();
+						});
+					
+					}else{
+						self.sl.info('Nothing to sync');
+						self.syncing = false;
+					}
+					return true;
+				}				
+			}
+
+			this.syncToLocal = function(data){
+				//console.log(data);
+				for(i=0;i<data.length;i++){
+					window.LStorage.setQuietly(data[i]);
+				}
+			}
+		}
+
+	/*	----------------------------------
+		Screen logic
+		---------------------------------- */
+		function oSelect(){
+			this.id = function(id){
+				return document.getElementById(id);
+			}
+
+			this.className = function(className){
+				return document.getElementsByClassName(className);
+			}			
+		}
+
+		var O = new oSelect();
+
+
+		function showScreen(screenID){
+			var screens = O.className("screen");
+			for (var i = 0; i< screens.length; i++){
+				screens[i].style.display = "none";
+			}
+			O.id(screenID).style.display = "block";
+		}
+
+	/*	--------------------------------------- 
+		Form Logic
+		--------------------------------------- */	
+
+		function saveCar(){
+			//var form = O.id("carForm").serialize();//.serializeArray();
+			var form = {
+				"table" : "cars",
+				"id" : parseInt(O.id('inputCarId').value),
+				"name" : O.id('inputCarName').value
+        		};
+			LStorage.set(form, function(){
+				ReloadCars();
+			});
+		}
+
+		function ReloadCars(){
+			O.id("CarsListTable").innerHTML = "";
+			LStorage.getAll({"table":"cars"},function(dataObj){
+				O.id("CarsListTable").innerHTML = O.id("CarsListTable").innerHTML + '<tr><td>' + dataObj.id + '</td><td>' + dataObj.name + '</td><td><a href="javascript:EditCar('+dataObj.id+')">Edit</a> | <a href="javascript:DeleteCar('+dataObj.id+')">Delete</a></td></tr>';
+			});
+		}
+
+		function EditCar(id){
+			LStorage.get({"table":"cars", "id": id},function(dataObj){
+				O.id('inputCarId').value = dataObj.id;
+				O.id('inputCarName').value = dataObj.name;
+			});
+		}
+
+		function DeleteCar(id){
+			//var form = O.id("carForm").serialize();//.serializeArray();
+			LStorage.remove({'table': 'cars', 'id': id}, function(){
+				ReloadCars();
+			});
+		}
+
+
+	/*	----------------------------------
+		Page scripts
+		---------------------------------- */
+
+		var DSO = new DataSyncObj();
+	
+		var LStorage = new LocalStorage(DSO);
+		setTimeout(function(){
+			ReloadCars();
+			//DSO.pullFromRemote();
+		},2000);	
+	</script>	
+</head>
+<body>
+	<ul>
+		<li><a href="javascript:showScreen('CarsList');">Cars</a></li>
+		<li><a href="javascript:showScreen('CarsEdit');">New car</a></li>
+		<li><a href="javascript:showScreen('PlayersList');">Players</a></li>
+		<li><a href="javascript:showScreen('PlayersEdit');">New Player</a></li>
+	</ul>
+	<div id="CarsList" class="screen">
+		<h2>Cars</h2>
+		<table>
+			<thead>
+				<tr>
+					<th>Id</th>
+					<th>Name</th>
+				</tr>
+			</thead>
+			<tbody id="CarsListTable">
+				
+			</tbody>
+		</table>
+	</div>
+	<div id="CarsEdit" class="screen">
+		<h2>New Car</h2>
+		<form id="carForm">
+			<input id="inputCarId" type="hidden" name="id" value="0" />
+			<input id="inputCarName" type="text" name="name" />
+			<input type="button" value="add/save" onclick="saveCar();" />
+		</form>
+	</div>
+	<div id="PlayersList" class="screen">
+		<h2>Player</h2>
+
+	</div>
+	<div id="PlayersEdit" class="screen">
+		<h2>New Player</h2>
+	</div>
+</body>
+</html>
