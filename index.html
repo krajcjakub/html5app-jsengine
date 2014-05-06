@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>data sync</title>
+	<script src="js/LocalStorage/LocalStorage.js"></script>
+	<script src="js/LocalStorage/LocalStorageIndexedDB.js"></script>
+	<script src="js/LocalStorage/LocalStorageWebSQL.js"></script>
+	<script src="js/DataSync/DataSync.js"></script>
+	<script src="js/DataSync/SyncLogger.js"></script>
+	<script>
+	/*	----------------------------------
+		Screen logic
+		---------------------------------- */
+		function oSelect(){
+			this.id = function(id){
+				return document.getElementById(id);
+			}
+
+			this.className = function(className){
+				return document.getElementsByClassName(className);
+			}			
+		}
+
+		var O = new oSelect();
+
+
+		function showScreen(screenID){
+			var screens = O.className("screen");
+			for (var i = 0; i< screens.length; i++){
+				screens[i].style.display = "none";
+			}
+			O.id(screenID).style.display = "block";
+		}
+
+	/*	--------------------------------------- 
+		Form Logic
+		--------------------------------------- */	
+
+		function saveCar(){
+			//var form = O.id("carForm").serialize();//.serializeArray();
+			var form = {
+				"table" : "cars",
+				"id" : parseInt(O.id('inputCarId').value),
+				"name" : O.id('inputCarName').value
+        		};
+			LStorage.set(form, function(){
+				ReloadCars();
+			});
+		}
+
+		function ReloadCars(){
+			O.id("CarsListTable").innerHTML = "";
+			LStorage.getAll({"table":"cars"},function(dataObj){
+				O.id("CarsListTable").innerHTML = O.id("CarsListTable").innerHTML + '<tr><td>' + dataObj.id + '</td><td>' + dataObj.name + '</td><td><a href="javascript:EditCar('+dataObj.id+')">Edit</a> | <a href="javascript:DeleteCar('+dataObj.id+')">Delete</a></td></tr>';
+			});
+		}
+
+		function EditCar(id){
+			LStorage.get({"table":"cars", "id": id},function(dataObj){
+				O.id('inputCarId').value = dataObj.id;
+				O.id('inputCarName').value = dataObj.name;
+			});
+		}
+
+		function DeleteCar(id){
+			//var form = O.id("carForm").serialize();//.serializeArray();
+			LStorage.remove({'table': 'cars', 'id': id}, function(){
+				ReloadCars();
+			});
+		}
+
+
+	/*	----------------------------------
+		Page scripts
+		---------------------------------- */
+		var DSO;
+		var LStorage;
+
+		window.onload = function(){
+			DSO = new DataSyncObj();
+	
+			LStorage = new LocalStorage(DSO);
+			setTimeout(function(){
+				ReloadCars();
+				//DSO.pullFromRemote();
+			},2000);
+		}	
+	</script>	
+</head>
+<body>
+	<ul>
+		<li><a href="javascript:showScreen('CarsList');">Cars</a></li>
+		<li><a href="javascript:showScreen('CarsEdit');">New car</a></li>
+		<li><a href="javascript:showScreen('PlayersList');">Players</a></li>
+		<li><a href="javascript:showScreen('PlayersEdit');">New Player</a></li>
+	</ul>
+	<div id="CarsList" class="screen">
+		<h2>Cars</h2>
+		<table>
+			<thead>
+				<tr>
+					<th>Id</th>
+					<th>Name</th>
+				</tr>
+			</thead>
+			<tbody id="CarsListTable">
+				
+			</tbody>
+		</table>
+	</div>
+	<div id="CarsEdit" class="screen">
+		<h2>New Car</h2>
+		<form id="carForm">
+			<input id="inputCarId" type="number" name="id" value="0" />
+			<input id="inputCarName" type="text" name="name" />
+			<input type="button" value="add/save" onclick="saveCar();" />
+		</form>
+	</div>
+	<div id="PlayersList" class="screen">
+		<h2>Player</h2>
+
+	</div>
+	<div id="PlayersEdit" class="screen">
+		<h2>New Player</h2>
+	</div>
+</body>
+</html>
