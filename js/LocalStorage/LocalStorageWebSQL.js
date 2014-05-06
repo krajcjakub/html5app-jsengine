@@ -7,7 +7,6 @@
 function LocalStorageWebSQL(){
 	var self = this;
 	console.log("Opening...");
-	this.db = openDatabase('test5', '1.0', 'test2', 2 * 1024 * 1024);	
 
 	this.onupgradeneeded = function(e) {
 		console.log("Upgrading...");
@@ -66,7 +65,7 @@ function LocalStorageWebSQL(){
 
 		self.db.transaction(function (tx) {  
 			tx.executeSql(
-				"SELECT * FROM cars WHERE id='"+id+"'", [], 
+				"SELECT * FROM "+storeName+" WHERE id='"+id+"'", [], 
 				function(tx, rs){
 					console.log('select ok');
 					console.log('rows:' + rs.rows.length);
@@ -101,7 +100,7 @@ function LocalStorageWebSQL(){
 
 		self.db.transaction(function (tx) {  
 			tx.executeSql(
-				"SELECT * FROM cars", [], 
+				"SELECT * FROM "+storeName+"", [], 
 				function(tx, rs){
 					console.log('select ok');
 					console.log('rows:' + rs.rows.length);
@@ -141,7 +140,7 @@ function LocalStorageWebSQL(){
 
 		self.db.transaction(function (tx) {  
 			tx.executeSql(
-				"DELETE FROM cars WHERE id='"+id+"'");
+				"DELETE FROM "+storeName+" WHERE id='"+id+"'");
 		},function(e){
 			console.log("kocallback");
 			if (typeof kocallback !== "undefined") {
