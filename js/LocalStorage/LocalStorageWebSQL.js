@@ -7,13 +7,12 @@
 function LocalStorageWebSQL(){
 	var self = this;
 	console.log("Opening...");
-	this.db = openDatabase('test3', '1.0', 'test2', 2 * 1024 * 1024);	
 
 	this.onupgradeneeded = function(e) {
 		console.log("Upgrading...");
 
 		self.db.transaction(function (tx) {  
-		   	tx.executeSql('CREATE TABLE IF NOT EXISTS cars (id AUTO_INCREMENT, obj)', [] ,function(e){
+		   	tx.executeSql('CREATE TABLE IF NOT EXISTS cars (id INTEGER PRIMARY KEY, obj)', [] ,function(e){
 				console.log("success query");
 			},function(e){
 				console.log("error query");
@@ -26,7 +25,7 @@ function LocalStorageWebSQL(){
 		});
 
 		self.db.transaction(function (tx) {  
-		   	tx.executeSql('CREATE TABLE IF NOT EXISTS players (id AUTO_INCREMENT, obj)');
+		   	tx.executeSql('CREATE TABLE IF NOT EXISTS players (id INTEGER PRIMARY KEY, obj)');
 		},function(e){
 			console.log("error creating players");
 		},function(e){
@@ -44,7 +43,7 @@ function LocalStorageWebSQL(){
 			if(dataObj.id!=0){
 				tx.executeSql("UPDATE "+storeName+" set obj='"+JSON.stringify(dataObj)+"' WHERE id='"+dataObj.id+"'");
 			}else{
-				tx.executeSql("INSERT INTO "+storeName+" (id, obj) VALUES ("+dataObj.id+",'"+JSON.stringify(dataObj)+"')");
+				tx.executeSql("INSERT INTO "+storeName+" (id, obj) VALUES (NULL,'"+JSON.stringify(dataObj)+"')");
 			}
 		},function(e){
 			console.log("kocallback");
@@ -66,7 +65,7 @@ function LocalStorageWebSQL(){
 
 		self.db.transaction(function (tx) {  
 			tx.executeSql(
-				"SELECT * FROM cars WHERE id='"+id+"'", [], 
+				"SELECT * FROM "+storeName+" WHERE id='"+id+"'", [], 
 				function(tx, rs){
 					console.log('select ok');
 					console.log('rows:' + rs.rows.length);
@@ -101,7 +100,7 @@ function LocalStorageWebSQL(){
 
 		self.db.transaction(function (tx) {  
 			tx.executeSql(
-				"SELECT * FROM cars", [], 
+				"SELECT * FROM "+storeName+"", [], 
 				function(tx, rs){
 					console.log('select ok');
 					console.log('rows:' + rs.rows.length);
@@ -141,7 +140,7 @@ function LocalStorageWebSQL(){
 
 		self.db.transaction(function (tx) {  
 			tx.executeSql(
-				"DELETE FROM cars WHERE id='"+id+"'");
+				"DELETE FROM "+storeName+" WHERE id='"+id+"'");
 		},function(e){
 			console.log("kocallback");
 			if (typeof kocallback !== "undefined") {
