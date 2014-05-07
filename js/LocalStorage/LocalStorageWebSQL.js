@@ -7,6 +7,7 @@
 function LocalStorageWebSQL(){
 	var self = this;
 	console.log("Opening...");
+	this.db = openDatabase('mydb', '1.0', 'my first database', 2 * 1024 * 1024);
 
 	this.onupgradeneeded = function(e) {
 		console.log("Upgrading...");
