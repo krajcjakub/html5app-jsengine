@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<meta charset="utf-8" />
 	<title>data sync</title>
+	<link rel="stylesheet" type="text/css" href="styles/bootstrap.css" />
+	<link rel="stylesheet" type="text/css" href="styles/def-styles.css" />
 	<script src="js/LocalStorage/LocalStorage.js"></script>
 	<script src="js/LocalStorage/LocalStorageIndexedDB.js"></script>
 	<script src="js/LocalStorage/LocalStorageWebSQL.js"></script>
@@ -88,40 +91,60 @@
 	</script>	
 </head>
 <body>
-	<ul>
-		<li><a href="javascript:showScreen('CarsList');">Cars</a></li>
-		<li><a href="javascript:showScreen('CarsEdit');">New car</a></li>
-		<li><a href="javascript:showScreen('PlayersList');">Players</a></li>
-		<li><a href="javascript:showScreen('PlayersEdit');">New Player</a></li>
-	</ul>
-	<div id="CarsList" class="screen">
-		<h2>Cars</h2>
-		<table>
-			<thead>
-				<tr>
-					<th>Id</th>
-					<th>Name</th>
-				</tr>
-			</thead>
-			<tbody id="CarsListTable">
-				
-			</tbody>
-		</table>
-	</div>
-	<div id="CarsEdit" class="screen">
-		<h2>New Car</h2>
-		<form id="carForm">
-			<input id="inputCarId" type="number" name="id" value="0" />
-			<input id="inputCarName" type="text" name="name" />
-			<input type="button" value="add/save" onclick="saveCar();" />
-		</form>
-	</div>
-	<div id="PlayersList" class="screen">
-		<h2>Player</h2>
+	<nav>
+		<ul>
+			<li><a href="javascript:showScreen('DashBoard');">Home</a></li>
+			<li><a href="javascript:showScreen('CarsList');">Cars</a></li>
+			<li><a href="javascript:showScreen('CarsEdit');">New car</a></li>
+			<li><a href="javascript:showScreen('PlayersList');">Players</a></li>
+			<li><a href="javascript:showScreen('PlayersEdit');">New Player</a></li>
+		</ul>
+	</nav>
+	<div class="center">
+		<section id="DashBoard" class="screen">
+			<h2>Dashboard</h2>
+			
+		</section>
+		<section id="CarsList" class="screen">
+			<h2>Cars</h2>
+			<div class="table-wrapper">
+				<div class="table-responsive">
+					<table class="table table-condensed">
+						<thead>
+							<tr>
+								<th>Id</th>
+								<th>Name</th>
+							</tr>
+						</thead>
+						<tbody id="CarsListTable">
+							
+						</tbody>
+					</table>
+				</div>
+			</div>	
+		</section>
+		<section id="CarsEdit" class="screen">
+			<h2>New Car</h2>
+			<form id="carForm" role="form">
+				<div class="form-group">
+					<label class="sr-only" for="inputCarId">Email address</label>
+					<input type="email" class="form-control" id="inputCarId" value="0" placeholder="Enter carId or 0">
+				</div>
+				<div class="form-group">
+					<label class="sr-only" for="inputCarName">Email address</label>
+					<input type="text" class="form-control" id="inputCarName" placeholder="Enter carName">
+				</div>
+				<input type="button" value="add/save" class="btn btn-default" onclick="saveCar();" />
+			</form>
+		</section>
+		<section id="PlayersList" class="screen">
+			<h2>Player</h2>
 
+		</section>
+		<section id="PlayersEdit" class="screen">
+			<h2>New Player</h2>
+		</section>
 	</div>
-	<div id="PlayersEdit" class="screen">
-		<h2>New Player</h2>
-	</div>
+	<footer>&copy;2014 by Jakub Krajč</footer>
 </body>
 </html>
