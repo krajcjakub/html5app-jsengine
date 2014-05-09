@@ -7,10 +7,23 @@
 function LocalStorageWebSQL(){
 	var self = this;
 	console.log("Opening...");
-	this.db = openDatabase('mydb', '1.0', 'my first database', 2 * 1024 * 1024);
+	
+
+	this.check = function(){
+		if (!window.openDatabase) {
+			return false;
+		}else{
+			return true;	
+		}
+	}
+
+	this.init = function(database, version){
+		self.db = openDatabase(database, version, 'my first database', 2 * 1024 * 1024);
+		self.onupgradeneeded();
+	}
+
 
 	this.onupgradeneeded = function(e) {
-		console.log("Upgrading...");
 
 		self.db.transaction(function (tx) {  
 		   	tx.executeSql('CREATE TABLE IF NOT EXISTS cars (id INTEGER PRIMARY KEY, obj)', [] ,function(e){
@@ -34,7 +47,7 @@ function LocalStorageWebSQL(){
 		});
 	}
 
-	self.onupgradeneeded();
+	
 
 	this.set = function(dataObj, okcallback, kocallback){
 		var storeName = dataObj.table

@@ -4,11 +4,25 @@
 	----------------------------------
 */
 
-function LocalStorageIndexedDb(){
-	this.openRequest = indexedDB.open("test2",1);
+function LocalStorageIndexedDB(){	
 	this.db = null;
-
 	var self = this;
+
+	this.check = function(){
+		window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+		window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction;
+		window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
+
+		if (!window.indexedDB) {
+			return false;
+		}else{
+			return true;	
+		}
+	}
+
+	this.init = function(database, version){
+		this.openRequest = indexedDB.open(database,version);
+	}
 
 	this.openRequest.onupgradeneeded = function(e) {
 		console.log("Upgrading...");
