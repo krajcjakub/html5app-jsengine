@@ -4,10 +4,10 @@
 	----------------------------------
 */
 
-function LocalStorageWebSQL(){
+function LocalStorageWebSQL(models){
 	var self = this;
-	console.log("Opening...");
-	
+	this.models = models;
+	console.log("Opening...");	
 
 	this.check = function(){
 		if (!window.openDatabase) {
@@ -24,26 +24,23 @@ function LocalStorageWebSQL(){
 
 
 	this.onupgradeneeded = function(e) {
-
+		
 		self.db.transaction(function (tx) {  
-		   	tx.executeSql('CREATE TABLE IF NOT EXISTS cars (id INTEGER PRIMARY KEY, obj)', [] ,function(e){
-				console.log("success query");
-			},function(e){
-				console.log("error query");
-			});
+			for(i=0;i<self.models.length;i++){
+				var tableName = self.models[i].table;
+				console.log(tableName);
+			   	tx.executeSql('CREATE TABLE IF NOT EXISTS '+tableName+' (id INTEGER PRIMARY KEY, obj)', [] ,function(e){
+					console.log("success "+tableName+" query");
+				},function(e){
+					console.log("error "+tableName+" query");
+				});
+			}
 		},function(e){
-			console.log("error creating cars");
+			console.log("error creating transaction");
 		},function(e){
-			console.log("success creating cars");
+			console.log("success creating transaction");
 		});
 
-		self.db.transaction(function (tx) {  
-		   	tx.executeSql('CREATE TABLE IF NOT EXISTS players (id INTEGER PRIMARY KEY, obj)');
-		},function(e){
-			console.log("error creating players");
-		},function(e){
-			console.log("success creating players");
-		});
 	}
 
 	this.add = function(dataObj, okcallback, kocallback){
@@ -152,8 +149,10 @@ function LocalStorageWebSQL(){
 		},function(e){
 			if (typeof okcallback !== "undefined") {
 				for(i=0;i<resDataObjs.length;i++){
-					var resDataObj = resDataObjs[i];				
-					setTimeout(function(){okcallback(resDataObj);},0);
+					var resDataObj = resDataObjs[i];	
+					//TODO: ak je toto asynchrónne, tak sa stihne resDataObj zmeniť na posledný skôr ako sa začne vykonávať
+					//prvý callback - teda vypíše N x poslený záznam			
+					okcallback(resDataObj);
 				}
 			}
 		});

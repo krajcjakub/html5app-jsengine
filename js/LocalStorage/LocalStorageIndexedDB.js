@@ -4,8 +4,9 @@
 	----------------------------------
 */
 
-function LocalStorageIndexedDB(){	
+function LocalStorageIndexedDB(models){	
 	this.db = null;
+	this.models = models;
 	var self = this;
 
 	this.check = function(){
@@ -26,12 +27,11 @@ function LocalStorageIndexedDB(){
 		this.openRequest.onupgradeneeded = function(e) {
 			var db = e.target.result;
 
-			if(!db.objectStoreNames.contains("cars")) {
-				db.createObjectStore("cars", { autoIncrement: true });
-			}
-
-			if(!db.objectStoreNames.contains("players")) {
-				db.createObjectStore("players", { autoIncrement: true });
+			for(i=0;i<self.models.length;i++){
+				var storeName = self.models[i].table;
+				if(!db.objectStoreNames.contains(storeName)) {
+					db.createObjectStore(storeName, { autoIncrement: true });
+				}
 			}
 		}
 

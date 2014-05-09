@@ -100,9 +100,20 @@
 		---------------------------------- */
 		var Data;
 
+		var Database = {
+			"Name":"testDb",
+			"Version":3, 
+
+			"Models":[
+				{"name":"Car", "table":"cars"},
+				{"name":"Manufacturer", "table":"manufacturers"},
+				{"name":"Player", "table":"players"}
+			]
+		};
+
 		window.onload = function(){
 	
-			Data = new Data();
+			Data = new Data(Database);
 			Data.addObject('Car','cars');
 			setTimeout(function(){
 				ReloadCars();
