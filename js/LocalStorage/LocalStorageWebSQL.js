@@ -30,8 +30,7 @@ function LocalStorageWebSQL(){
 				console.log("success query");
 			},function(e){
 				console.log("error query");
-			}
-			);
+			});
 		},function(e){
 			console.log("error creating cars");
 		},function(e){
@@ -62,12 +61,12 @@ function LocalStorageWebSQL(){
 		},function(e){
 			console.log("kocallback");
 			if (typeof kocallback !== "undefined") {
-				kocallback();
+				setTimeout(function(){kocallback();},0);
 			}
 		},function(e){
 			console.log("okcallback");
 			if (typeof okcallback !== "undefined") {				
-				okcallback();
+				setTimeout(function(){okcallback();},0);
 			}
 		});
 	}
@@ -96,13 +95,13 @@ function LocalStorageWebSQL(){
 		},function(e){
 			console.log("kocallback");
 			if (typeof kocallback !== "undefined") {
-				kocallback();
+				setTimeout(function(){kocallback();},0);
 			}
 		},function(e){
 			console.log("okcallback");
 			console.log(resDataObj);
 			if (typeof okcallback !== "undefined") {				
-				okcallback(resDataObj);
+				setTimeout(function(){okcallback(resDataObj);},0);
 			}
 		});
 		
@@ -116,32 +115,25 @@ function LocalStorageWebSQL(){
 			tx.executeSql(
 				"SELECT * FROM "+storeName+"", [], 
 				function(tx, rs){
-					console.log('select ok');
-					console.log('rows:' + rs.rows.length);
 					for(i=0;i<rs.rows.length;i++) {
 						var row = rs.rows.item(i);
-						console.log(row);
 						var rowDataObj = JSON.parse(row['obj']);
 						rowDataObj.id = row['id']; 
 						resDataObjs.push(rowDataObj);												
 					}
-      				},function(tx, e){
-					console.log(tx);
-					console.log(e);
+      			},function(tx, e){
+
 				}
 			);
 		},function(e){
-			console.log("kocallback");
 			if (typeof kocallback !== "undefined") {
-				kocallback();
+				setTimeout(function(){kocallback();},0);
 			}
 		},function(e){
-			console.log("okcallback");
-			console.log(resDataObj);
 			if (typeof okcallback !== "undefined") {
 				for(i=0;i<resDataObjs.length;i++){
 					var resDataObj = resDataObjs[i];				
-					okcallback(resDataObj);
+					setTimeout(function(){okcallback(resDataObj);},0);
 				}
 			}
 		});
@@ -156,13 +148,12 @@ function LocalStorageWebSQL(){
 			tx.executeSql(
 				"DELETE FROM "+storeName+" WHERE id='"+id+"'");
 		},function(e){
-			console.log("kocallback");
 			if (typeof kocallback !== "undefined") {
-				kocallback();
+				setTimeout(function(){kocallback();},0);
 			}
 		},function(e){
 			if (typeof okcallback !== "undefined") {				
-				okcallback();
+				setTimeout(function(){okcallback();},0);
 			}
 		});		
 	}
@@ -174,13 +165,12 @@ function LocalStorageWebSQL(){
 			tx.executeSql(
 				"DELETE FROM "+storeName+"");
 		},function(e){
-			console.log("kocallback");
 			if (typeof kocallback !== "undefined") {
-				kocallback();
+				setTimeout(function(){kocallback();},0);
 			}
 		},function(e){
 			if (typeof okcallback !== "undefined") {				
-				okcallback();
+				setTimeout(function(){okcallback();},0);
 			}
 		});		
 	}

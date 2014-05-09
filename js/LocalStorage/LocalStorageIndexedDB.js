@@ -62,14 +62,13 @@ function LocalStorageIndexedDB(){
 
 		request.onerror = function(e) {
 			if (typeof kocallback !== "undefined") {
-				kocallback();
+				setTimeout(function(){kocallback();},0);
 			}
 		}
 
 		request.onsuccess = function(e) {
 			if (typeof okcallback !== "undefined") {
-				console.log("okcallback");
-				okcallback();
+				setTimeout(function(){okcallback();},0);
 			}
 		}
 		
@@ -86,7 +85,7 @@ function LocalStorageIndexedDB(){
 
 		request.onerror = function(e) {
 		if (typeof kocallback !== "undefined") {
-				kocallback();
+				setTimeout(function(){kocallback();},0);
 			}
 		}
 
@@ -94,7 +93,7 @@ function LocalStorageIndexedDB(){
 			var result = e.target.result;
 			result.id = id;
 			if (typeof okcallback !== "undefined") {
-				okcallback(result);
+				setTimeout(function(){okcallback(result);},0);
 			}
 		}
 		
@@ -112,7 +111,7 @@ function LocalStorageIndexedDB(){
 
 		cursor.onerror = function(e) {
 		if (typeof kocallback !== "undefined") {
-				kocallback();
+				setTimeout(function(){kocallback();},0);
 			}
 		}
 
@@ -122,7 +121,7 @@ function LocalStorageIndexedDB(){
 				var result = res.value;
 				result.id = res.key;
 				if (typeof okcallback !== "undefined") {
-					okcallback(result);
+					setTimeout(function(){okcallback(result);},0);
 				}
 				res.continue();
 			}
@@ -141,7 +140,7 @@ function LocalStorageIndexedDB(){
 
 		request.onerror = function(e) {
 			if (typeof kocallback !== "undefined") {
-				kocallback();
+				setTimeout(function(){kocallback();},0);
 			}
 		}
 
@@ -149,7 +148,7 @@ function LocalStorageIndexedDB(){
 			/*var result = e.target.result;
 			result.id = id;*/
 			if (typeof okcallback !== "undefined") {
-				okcallback();
+				setTimeout(function(){okcallback();},0);
 			}
 		}
 		
@@ -165,13 +164,13 @@ function LocalStorageIndexedDB(){
 
 		request.onerror = function(e) {
 			if (typeof kocallback !== "undefined") {
-				kocallback();
+				setTimeout(function(){kocallback();},0);
 			}
 		}
 
 		request.onsuccess = function(e) {
 			if (typeof okcallback !== "undefined") {
-				okcallback();
+				setTimeout(function(){okcallback();},0);
 			}
 		}
 		
