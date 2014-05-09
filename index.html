@@ -10,6 +10,8 @@
 	<script src="js/LocalStorage/LocalStorageWebSQL.js"></script>
 	<script src="js/DataSync/DataSync.js"></script>
 	<script src="js/DataSync/SyncLogger.js"></script>
+	<script src="js/Data.js"></script>
+	<script src="js/DataObject.js"></script>
 	<script>
 	/*	----------------------------------
 		Screen logic
@@ -39,7 +41,7 @@
 		Form Logic
 		--------------------------------------- */	
 
-		function saveCar(){
+		/*function saveCar(){
 			//var form = O.id("carForm").serialize();//.serializeArray();
 			var form = {
 				"table" : "cars",
@@ -92,22 +94,20 @@
 			LStorage.remove({'table': 'cars', 'id': id}, function(){
 				ReloadCars();
 			});
-		}
+		}*/
 
 
 	/*	----------------------------------
 		Page scripts
 		---------------------------------- */
-		var DSO;
-		var LStorage;
+		var Data;
 
 		window.onload = function(){
-			DSO = new DataSyncObj();
 	
-			LStorage = new LocalStorage();
-			LStorage.init('testDb',1);
+			Data = new Data();
+			Data.addObject('Car','cars');
 			setTimeout(function(){
-				ReloadCars();
+				//ReloadCars();
 				//DSO.pullFromRemote();
 			},2000);
 		}	
