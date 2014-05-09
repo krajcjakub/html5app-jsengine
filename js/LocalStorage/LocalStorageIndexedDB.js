@@ -22,30 +22,29 @@ function LocalStorageIndexedDB(){
 
 	this.init = function(database, version){
 		this.openRequest = indexedDB.open(database,version);
-	}
 
-	this.openRequest.onupgradeneeded = function(e) {
-		console.log("Upgrading...");
-		var db = e.target.result;
+		this.openRequest.onupgradeneeded = function(e) {
+			var db = e.target.result;
 
-		if(!db.objectStoreNames.contains("cars")) {
-			db.createObjectStore("cars", { autoIncrement: true });
+			if(!db.objectStoreNames.contains("cars")) {
+				db.createObjectStore("cars", { autoIncrement: true });
+			}
+
+			if(!db.objectStoreNames.contains("players")) {
+				db.createObjectStore("players", { autoIncrement: true });
+			}
 		}
 
-		if(!db.objectStoreNames.contains("players")) {
-			db.createObjectStore("players", { autoIncrement: true });
+		this.openRequest.onsuccess = function(e) {
+			console.log("Success!");
+			self.db = e.target.result;
 		}
-	}
 
-	this.openRequest.onsuccess = function(e) {
-		console.log("Success!");
-		self.db = e.target.result;
-	}
-
-	this.openRequest.onerror = function(e) {
-		console.log("Error");
-		console.dir(e);
-	}
+		this.openRequest.onerror = function(e) {
+			console.log("Error");
+			console.dir(e);
+		}
+	}	
 
 	this.set = function(dataObj, okcallback, kocallback){
 		var storeName = dataObj.table
