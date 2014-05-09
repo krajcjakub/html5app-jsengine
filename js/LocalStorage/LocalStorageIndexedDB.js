@@ -17,7 +17,7 @@ function LocalStorageIndexedDB(models){
 		if (!window.indexedDB) {
 			return false;
 		}else{
-			return false;	
+			return true;	
 		}
 	}
 
