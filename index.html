@@ -41,14 +41,13 @@
 		Form Logic
 		--------------------------------------- */	
 
-		/*function saveCar(){
+		function saveCar(){
 			//var form = O.id("carForm").serialize();//.serializeArray();
 			var form = {
-				"table" : "cars",
 				"id" : parseInt(O.id('inputCarEditId').value),
 				"name" : O.id('inputCarEditName').value
         		};
-			LStorage.set(form, function(){
+			Data.Car.set(form, function(){
 				ReloadCars();
 				showScreen("CarsList");
 			});
@@ -57,11 +56,10 @@
 		function addCar(){
 			//var form = O.id("carForm").serialize();//.serializeArray();
 			var form = {
-				"table" : "cars",
 				"id" : parseInt(O.id('inputCarAddId').value),
 				"name" : O.id('inputCarAddName').value
         		};
-			LStorage.set(form, function(){
+			Data.Car.set(form, function(){
 				setTimeout(function(){
 					ReloadCars();
 					showScreen("CarsList");
@@ -71,13 +69,13 @@
 
 		function ReloadCars(){
 			O.id("CarsListTable").innerHTML = "";
-			LStorage.getAll({"table":"cars"},function(dataObj){
+			Data.Car.getAll({},function(dataObj){
 				O.id("CarsListTable").innerHTML = O.id("CarsListTable").innerHTML + '<tr><td>' + dataObj.id + '</td><td>' + dataObj.name + '</td><td><a href="javascript:EditCar('+dataObj.id+')">Edit</a> | <a href="javascript:DeleteCar('+dataObj.id+')">Delete</a></td></tr>';
 			});
 		}
 
 		function EditCar(id){
-			LStorage.get({"table":"cars", "id": id},function(dataObj){
+			Data.Car.get({"id": id},function(dataObj){
 				O.id('inputCarEditId').value = dataObj.id;
 				O.id('inputCarEditName').value = dataObj.name;
 				O.id('spanCarEditName').innerHTML = dataObj.name;
@@ -91,10 +89,10 @@
 
 		function DeleteCar(id){
 			//var form = O.id("carForm").serialize();//.serializeArray();
-			LStorage.remove({'table': 'cars', 'id': id}, function(){
+			Data.Car.remove({'id': id}, function(){
 				ReloadCars();
 			});
-		}*/
+		}
 
 
 	/*	----------------------------------
@@ -107,7 +105,7 @@
 			Data = new Data();
 			Data.addObject('Car','cars');
 			setTimeout(function(){
-				//ReloadCars();
+				ReloadCars();
 				//DSO.pullFromRemote();
 			},2000);
 		}	
