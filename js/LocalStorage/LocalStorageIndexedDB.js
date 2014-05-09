@@ -4,33 +4,50 @@
 	----------------------------------
 */
 
-function LocalStorageIndexedDb(){
-	this.openRequest = indexedDB.open("test2",1);
+function LocalStorageIndexedDB(){	
 	this.db = null;
-
 	var self = this;
 
-	this.openRequest.onupgradeneeded = function(e) {
-		console.log("Upgrading...");
-		var db = e.target.result;
+	this.check = function(){
+		window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+		window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction;
+		window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
 
-		if(!db.objectStoreNames.contains("cars")) {
-			db.createObjectStore("cars", { autoIncrement: true });
-		}
-
-		if(!db.objectStoreNames.contains("players")) {
-			db.createObjectStore("players", { autoIncrement: true });
+		if (!window.indexedDB) {
+			return false;
+		}else{
+			return true;	
 		}
 	}
 
-	this.openRequest.onsuccess = function(e) {
-		console.log("Success!");
-		self.db = e.target.result;
-	}
+	this.init = function(database, version){
+		this.openRequest = indexedDB.open(database,version);
 
-	this.openRequest.onerror = function(e) {
-		console.log("Error");
-		console.dir(e);
+		this.openRequest.onupgradeneeded = function(e) {
+			var db = e.target.result;
+
+			if(!db.objectStoreNames.contains("cars")) {
+				db.createObjectStore("cars", { autoIncrement: true });
+			}
+
+			if(!db.objectStoreNames.contains("players")) {
+				db.createObjectStore("players", { autoIncrement: true });
+			}
+		}
+
+		this.openRequest.onsuccess = function(e) {
+			console.log("Success!");
+			self.db = e.target.result;
+		}
+
+		this.openRequest.onerror = function(e) {
+			console.log("Error");
+			console.dir(e);
+		}
+	}	
+
+	this.add = function(dataObj, okcallback, kocallback){
+		self.set(dataObj, okcallback, kocallback);
 	}
 
 	this.set = function(dataObj, okcallback, kocallback){
@@ -49,14 +66,13 @@ function LocalStorageIndexedDb(){
 
 		request.onerror = function(e) {
 			if (typeof kocallback !== "undefined") {
-				kocallback();
+				setTimeout(function(){kocallback();},0);
 			}
 		}
 
 		request.onsuccess = function(e) {
 			if (typeof okcallback !== "undefined") {
-				console.log("okcallback");
-				okcallback();
+				setTimeout(function(){okcallback();},0);
 			}
 		}
 		
@@ -73,7 +89,7 @@ function LocalStorageIndexedDb(){
 
 		request.onerror = function(e) {
 		if (typeof kocallback !== "undefined") {
-				kocallback();
+				setTimeout(function(){kocallback();},0);
 			}
 		}
 
@@ -81,7 +97,7 @@ function LocalStorageIndexedDb(){
 			var result = e.target.result;
 			result.id = id;
 			if (typeof okcallback !== "undefined") {
-				okcallback(result);
+				setTimeout(function(){okcallback(result);},0);
 			}
 		}
 		
@@ -99,7 +115,7 @@ function LocalStorageIndexedDb(){
 
 		cursor.onerror = function(e) {
 		if (typeof kocallback !== "undefined") {
-				kocallback();
+				setTimeout(function(){kocallback();},0);
 			}
 		}
 
@@ -109,7 +125,7 @@ function LocalStorageIndexedDb(){
 				var result = res.value;
 				result.id = res.key;
 				if (typeof okcallback !== "undefined") {
-					okcallback(result);
+					setTimeout(function(){okcallback(result);},0);
 				}
 				res.continue();
 			}
@@ -128,7 +144,7 @@ function LocalStorageIndexedDb(){
 
 		request.onerror = function(e) {
 			if (typeof kocallback !== "undefined") {
-				kocallback();
+				setTimeout(function(){kocallback();},0);
 			}
 		}
 
@@ -136,7 +152,7 @@ function LocalStorageIndexedDb(){
 			/*var result = e.target.result;
 			result.id = id;*/
 			if (typeof okcallback !== "undefined") {
-				okcallback();
+				setTimeout(function(){okcallback();},0);
 			}
 		}
 		
@@ -152,13 +168,13 @@ function LocalStorageIndexedDb(){
 
 		request.onerror = function(e) {
 			if (typeof kocallback !== "undefined") {
-				kocallback();
+				setTimeout(function(){kocallback();},0);
 			}
 		}
 
 		request.onsuccess = function(e) {
 			if (typeof okcallback !== "undefined") {
-				okcallback();
+				setTimeout(function(){okcallback();},0);
 			}
 		}
 		

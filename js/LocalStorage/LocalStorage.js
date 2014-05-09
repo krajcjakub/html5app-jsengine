@@ -7,16 +7,36 @@
 */
 
 function LocalStorage(DSO){
-	this.dso = DSO; //Data Sync Object
-
-	//this.ls = new LocalStorageWebSQL();
-	this.ls = new LocalStorageIndexedDb();
+	//this.dso = DSO; //Data Sync Object
 
 	var self = this;
 
+	this.init = function(database, version){
+		this.ls = new LocalStorageIndexedDB();
+
+		if(this.ls.check()){
+			this.ls.init(database, version);
+			return true;
+		}else{
+			this.ls = new LocalStorageWebSQL();
+			if(this.ls.check()){
+				this.ls.init(database, version);
+				return true;
+			}else{
+				alert("No local storage supported");
+				return false;
+			}	
+		}
+	}
+	
+	this.add = function(dataObj, okcallback, kocallback){
+		//self.dso.addLocalChange(dataObj);
+		self.ls.add(dataObj, okcallback, kocallback);
+	}
+
 	this.set = function(dataObj, okcallback, kocallback){
-		self.dso.addLocalChange(dataObj);
-		self.setQuietly(dataObj, okcallback, kocallback);
+		//self.dso.addLocalChange(dataObj);
+		self.ls.set(dataObj, okcallback, kocallback);
 	}
 
 	this.setQuietly = function(dataObj, okcallback, kocallback){

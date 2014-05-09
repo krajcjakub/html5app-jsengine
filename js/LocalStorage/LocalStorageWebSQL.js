@@ -7,17 +7,30 @@
 function LocalStorageWebSQL(){
 	var self = this;
 	console.log("Opening...");
+	
+
+	this.check = function(){
+		if (!window.openDatabase) {
+			return false;
+		}else{
+			return true;	
+		}
+	}
+
+	this.init = function(database, version){
+		self.db = openDatabase(database, version, 'my first database', 2 * 1024 * 1024);
+		self.onupgradeneeded();
+	}
+
 
 	this.onupgradeneeded = function(e) {
-		console.log("Upgrading...");
 
 		self.db.transaction(function (tx) {  
 		   	tx.executeSql('CREATE TABLE IF NOT EXISTS cars (id INTEGER PRIMARY KEY, obj)', [] ,function(e){
 				console.log("success query");
 			},function(e){
 				console.log("error query");
-			}
-			);
+			});
 		},function(e){
 			console.log("error creating cars");
 		},function(e){
@@ -33,7 +46,27 @@ function LocalStorageWebSQL(){
 		});
 	}
 
-	self.onupgradeneeded();
+	this.add = function(dataObj, okcallback, kocallback){
+		var storeName = dataObj.table
+		delete dataObj.table;
+
+		self.db.transaction(function (tx) {  
+			if(dataObj.id!=0){
+				tx.executeSql("INSERT INTO "+storeName+" (id, obj) VALUES ("+dataObj.id+",'"+JSON.stringify(dataObj)+"')");
+			}else{
+				tx.executeSql("INSERT INTO "+storeName+" (id, obj) VALUES (NULL,'"+JSON.stringify(dataObj)+"')");
+			}
+		},function(e){
+			if (typeof kocallback !== "undefined") {
+				setTimeout(function(){kocallback();},0);
+			}
+		},function(e){
+			if (typeof okcallback !== "undefined") {				
+				setTimeout(function(){okcallback();},0);
+			}
+		});
+	}
+	
 
 	this.set = function(dataObj, okcallback, kocallback){
 		var storeName = dataObj.table
@@ -48,12 +81,12 @@ function LocalStorageWebSQL(){
 		},function(e){
 			console.log("kocallback");
 			if (typeof kocallback !== "undefined") {
-				kocallback();
+				setTimeout(function(){kocallback();},0);
 			}
 		},function(e){
 			console.log("okcallback");
 			if (typeof okcallback !== "undefined") {				
-				okcallback();
+				setTimeout(function(){okcallback();},0);
 			}
 		});
 	}
@@ -82,13 +115,13 @@ function LocalStorageWebSQL(){
 		},function(e){
 			console.log("kocallback");
 			if (typeof kocallback !== "undefined") {
-				kocallback();
+				setTimeout(function(){kocallback();},0);
 			}
 		},function(e){
 			console.log("okcallback");
 			console.log(resDataObj);
 			if (typeof okcallback !== "undefined") {				
-				okcallback(resDataObj);
+				setTimeout(function(){okcallback(resDataObj);},0);
 			}
 		});
 		
@@ -102,32 +135,25 @@ function LocalStorageWebSQL(){
 			tx.executeSql(
 				"SELECT * FROM "+storeName+"", [], 
 				function(tx, rs){
-					console.log('select ok');
-					console.log('rows:' + rs.rows.length);
 					for(i=0;i<rs.rows.length;i++) {
 						var row = rs.rows.item(i);
-						console.log(row);
 						var rowDataObj = JSON.parse(row['obj']);
 						rowDataObj.id = row['id']; 
 						resDataObjs.push(rowDataObj);												
 					}
-      				},function(tx, e){
-					console.log(tx);
-					console.log(e);
+      			},function(tx, e){
+
 				}
 			);
 		},function(e){
-			console.log("kocallback");
 			if (typeof kocallback !== "undefined") {
-				kocallback();
+				setTimeout(function(){kocallback();},0);
 			}
 		},function(e){
-			console.log("okcallback");
-			console.log(resDataObj);
 			if (typeof okcallback !== "undefined") {
 				for(i=0;i<resDataObjs.length;i++){
 					var resDataObj = resDataObjs[i];				
-					okcallback(resDataObj);
+					setTimeout(function(){okcallback(resDataObj);},0);
 				}
 			}
 		});
@@ -142,13 +168,12 @@ function LocalStorageWebSQL(){
 			tx.executeSql(
 				"DELETE FROM "+storeName+" WHERE id='"+id+"'");
 		},function(e){
-			console.log("kocallback");
 			if (typeof kocallback !== "undefined") {
-				kocallback();
+				setTimeout(function(){kocallback();},0);
 			}
 		},function(e){
 			if (typeof okcallback !== "undefined") {				
-				okcallback();
+				setTimeout(function(){okcallback();},0);
 			}
 		});		
 	}
@@ -160,13 +185,12 @@ function LocalStorageWebSQL(){
 			tx.executeSql(
 				"DELETE FROM "+storeName+"");
 		},function(e){
-			console.log("kocallback");
 			if (typeof kocallback !== "undefined") {
-				kocallback();
+				setTimeout(function(){kocallback();},0);
 			}
 		},function(e){
 			if (typeof okcallback !== "undefined") {				
-				okcallback();
+				setTimeout(function(){okcallback();},0);
 			}
 		});		
 	}
