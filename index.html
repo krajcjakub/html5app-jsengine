@@ -47,7 +47,7 @@
 				"id" : parseInt(O.id('inputCarEditId').value),
 				"name" : O.id('inputCarEditName').value
         		};
-			Data.Car.set(form, function(){
+			Data.Car.Set(form, function(){
 				ReloadCars();
 				showScreen("CarsList");
 			});
@@ -59,7 +59,7 @@
 				"id" : parseInt(O.id('inputCarAddId').value),
 				"name" : O.id('inputCarAddName').value
         		};
-			Data.Car.set(form, function(){
+			Data.Car.Add(form, function(){
 					ReloadCars();
 					showScreen("CarsList");
 			});
@@ -67,13 +67,13 @@
 
 		function ReloadCars(){
 			O.id("CarsListTable").innerHTML = "";
-			Data.Car.getAll({},function(dataObj){
+			Data.Car.GetAll({},function(dataObj){
 				O.id("CarsListTable").innerHTML = O.id("CarsListTable").innerHTML + '<tr><td>' + dataObj.id + '</td><td>' + dataObj.name + '</td><td><a href="javascript:EditCar('+dataObj.id+')">Edit</a> | <a href="javascript:DeleteCar('+dataObj.id+')">Delete</a></td></tr>';
 			});
 		}
 
 		function EditCar(id){
-			Data.Car.get({"id": id},function(dataObj){
+			Data.Car.Get({"id": id},function(dataObj){
 				O.id('inputCarEditId').value = dataObj.id;
 				O.id('inputCarEditName').value = dataObj.name;
 				O.id('spanCarEditName').innerHTML = dataObj.name;
@@ -82,12 +82,14 @@
 		}
 
 		function NewCar(id){
+			O.id('inputCarAddId').value = 0;
+			O.id('inputCarAddName').value = '';
 			showScreen("CarsNew");
 		}
 
 		function DeleteCar(id){
 			//var form = O.id("carForm").serialize();//.serializeArray();
-			Data.Car.remove({'id': id}, function(){
+			Data.Car.Del({'id': id}, function(){
 				ReloadCars();
 			});
 		}
@@ -171,7 +173,7 @@
 						<form id="carFormEdit" role="form">
 							<div class="form-group">
 								<label class="sr-only" for="inputCarEditId">Email address</label>
-								<input type="email" class="form-control" id="inputCarEditId" placeholder="Enter carId or 0">
+								<input type="number" class="form-control" id="inputCarEditId" placeholder="Enter carId or 0">
 							</div>
 							<div class="form-group">
 								<label class="sr-only" for="inputCarEditName">Email address</label>
@@ -196,10 +198,12 @@
 					<div class="col-md-8">
 						<h2>New Car</h2>
 						<form id="carFormAdd" role="form">
-							<input type="hidden" id="inputCarAddId" value="0" />
-
 							<div class="form-group">
-								<label class="sr-only" for="inputCarAddName">Email address</label>
+								<label class="sr-only" for="inputCarAddId">Car ID</label>
+								<input type="number" class="form-control" id="inputCarAddId" placeholder="Enter carId or 0">
+							</div>
+							<div class="form-group">
+								<label class="sr-only" for="inputCarAddName">Car Name</label>
 								<input type="text" class="form-control" id="inputCarAddName" placeholder="Enter carName">
 							</div>
 							<input type="button" value="add/save" class="btn btn-default" onclick="addCar();" />

@@ -46,6 +46,10 @@ function LocalStorageIndexedDB(){
 		}
 	}	
 
+	this.add = function(dataObj, okcallback, kocallback){
+		self.set(dataObj, okcallback, kocallback);
+	}
+
 	this.set = function(dataObj, okcallback, kocallback){
 		var storeName = dataObj.table
 		delete dataObj.table;

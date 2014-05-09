@@ -46,6 +46,26 @@ function LocalStorageWebSQL(){
 		});
 	}
 
+	this.add = function(dataObj, okcallback, kocallback){
+		var storeName = dataObj.table
+		delete dataObj.table;
+
+		self.db.transaction(function (tx) {  
+			if(dataObj.id!=0){
+				tx.executeSql("INSERT INTO "+storeName+" (id, obj) VALUES ("+dataObj.id+",'"+JSON.stringify(dataObj)+"')");
+			}else{
+				tx.executeSql("INSERT INTO "+storeName+" (id, obj) VALUES (NULL,'"+JSON.stringify(dataObj)+"')");
+			}
+		},function(e){
+			if (typeof kocallback !== "undefined") {
+				setTimeout(function(){kocallback();},0);
+			}
+		},function(e){
+			if (typeof okcallback !== "undefined") {				
+				setTimeout(function(){okcallback();},0);
+			}
+		});
+	}
 	
 
 	this.set = function(dataObj, okcallback, kocallback){

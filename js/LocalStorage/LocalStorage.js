@@ -29,10 +29,14 @@ function LocalStorage(DSO){
 		}
 	}
 	
+	this.add = function(dataObj, okcallback, kocallback){
+		//self.dso.addLocalChange(dataObj);
+		self.ls.add(dataObj, okcallback, kocallback);
+	}
 
 	this.set = function(dataObj, okcallback, kocallback){
 		//self.dso.addLocalChange(dataObj);
-		self.setQuietly(dataObj, okcallback, kocallback);
+		self.ls.set(dataObj, okcallback, kocallback);
 	}
 
 	this.setQuietly = function(dataObj, okcallback, kocallback){
