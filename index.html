@@ -60,8 +60,10 @@
 				"name" : O.id('inputCarAddName').value
         		};
 			LStorage.set(form, function(){
-				ReloadCars();
-				showScreen("CarsList");
+				setTimeout(function(){
+					ReloadCars();
+					showScreen("CarsList");
+				},1000);				
 			});
 		}
 
@@ -102,7 +104,8 @@
 		window.onload = function(){
 			DSO = new DataSyncObj();
 	
-			LStorage = new LocalStorage(DSO);
+			LStorage = new LocalStorage();
+			LStorage.init('testDb',1);
 			setTimeout(function(){
 				ReloadCars();
 				//DSO.pullFromRemote();
