@@ -11,16 +11,16 @@ function LocalStorage(DSO){
 
 	var self = this;
 
-	this.init = function(database, version){
-		this.ls = new LocalStorageIndexedDB();
+	this.init = function(db){
+		this.ls = new LocalStorageIndexedDB(db.Models);
 
 		if(this.ls.check()){
-			this.ls.init(database, version);
+			this.ls.init(db.Name, db.Version);
 			return true;
 		}else{
-			this.ls = new LocalStorageWebSQL();
+			this.ls = new LocalStorageWebSQL(db.Models);
 			if(this.ls.check()){
-				this.ls.init(database, version);
+				this.ls.init(db.Name, db.Version);
 				return true;
 			}else{
 				alert("No local storage supported");

@@ -1,4 +1,4 @@
-function Data(){
+function Data(db){
 	//objects	
 	this.AJAX;
 	this.DataSync;	
@@ -9,7 +9,7 @@ function Data(){
 
 	//constructor
 	this.LStorage = new LocalStorage();
-	this.hasLS = this.LStorage.init('testDb',1);
+	this.hasLS = this.LStorage.init(db);
 
 	var self = this;
 
