@@ -12,6 +12,8 @@
 	<script src="js/DataSync/SyncLogger.js"></script>
 	<script src="js/Data.js"></script>
 	<script src="js/DataObject.js"></script>
+	<script src="js/Screen.js"></script>
+	<script src="js/ScreenObject.js"></script>
 	<script>
 	/*	----------------------------------
 		Some functions
@@ -37,14 +39,6 @@
 		var O = new oSelect();
 
 
-		function showScreen(screenID){
-			var screens = O.className("screen");
-			for (var i = 0; i< screens.length; i++){
-				screens[i].style.display = "none";
-			}
-			O.id(screenID).style.display = "block";
-		}
-
 	/*	--------------------------------------- 
 		Form Logic
 		--------------------------------------- */	
@@ -57,7 +51,7 @@
         		};
 			Data.Car.Set(form, function(){
 				ReloadCars();
-				showScreen("CarsList");
+				Screen.CarsList.open();
 			});
 		}
 
@@ -69,7 +63,7 @@
         		};
 			Data.Car.Add(form, function(){
 					ReloadCars();
-					showScreen("CarsList");
+					Screen.CarsList.open();
 			});
 		}
 
@@ -85,14 +79,14 @@
 				O.id('inputCarEditId').value = dataObj.id;
 				O.id('inputCarEditName').value = dataObj.name;
 				O.id('spanCarEditName').innerHTML = dataObj.name;
-				showScreen("CarsEdit");
+				Screen.CarsEdit.open();
 			});
 		}
 
 		function NewCar(id){
 			O.id('inputCarAddId').value = 0;
 			O.id('inputCarAddName').value = '';
-			showScreen("CarsNew");
+			Screen.CarsNew.open();
 		}
 
 		function DeleteCar(id){
@@ -107,6 +101,7 @@
 		Page scripts
 		---------------------------------- */
 		var Data;
+		var Screen;
 
 		var Database = {
 			"Name":"testDb",
@@ -123,6 +118,17 @@
 	
 			Data = new Data(Database);
 			Data.addObject('Car','cars');
+
+			Screen = new Screen();
+			Screen.addObject('CarsList','CarsList');
+			Screen.addObject('CarsEdit','CarsEdit');
+			Screen.addObject('CarsNew','CarsNew');
+			Screen.addObject('DashBoard','DashBoard');
+
+
+
+
+
 			setTimeout(function(){
 				ReloadCars();
 				//DSO.pullFromRemote();
@@ -133,8 +139,8 @@
 <body>
 	<nav>
 		<ul>
-			<li><a href="javascript:showScreen('DashBoard');">Home</a></li>
-			<li><a href="javascript:showScreen('CarsList');">Cars</a></li>
+			<li><a href="javascript:Screen.DashBoard.open();">Home</a></li>
+			<li><a href="javascript:Screen.CarsList.open();">Cars</a></li>
 			<!--<li><a href="javascript:showScreen('CarsEdit');">New car</a></li>
 			<li><a href="javascript:showScreen('PlayersList');">Players</a></li>
 			<li><a href="javascript:showScreen('PlayersEdit');">New Player</a></li>-->
@@ -151,8 +157,8 @@
   					<div class="col-md-4">
   						<h3>Cars Menu</h3>
   						<ul>
-  							<li><a href="javascript:showScreen('CarsList');">All cars</a></li>
-  							<li><a href="javascript:showScreen('CarsNew');">New car</a></li>
+  							<li><a href="javascript:Screen.CarsList.open();">All cars</a></li>
+  							<li><a href="javascript:Screen.CarsNew.open();">New car</a></li>
   						</ul>
   					</div>
 					<div class="col-md-8">
@@ -183,8 +189,8 @@
   					<div class="col-md-4">
   						<h3>Cars Menu</h3>
   						<ul>
-  							<li><a href="javascript:showScreen('CarsList');">All cars</a></li>
-  							<li><a href="javascript:showScreen('CarsNew');">New car</a></li>
+  							<li><a href="javascript:Screen.CarsList.open();">All cars</a></li>
+  							<li><a href="javascript:Screen.CarsNew.open();">New car</a></li>
   						</ul>
   					</div>
 					<div class="col-md-8">
@@ -210,8 +216,8 @@
   					<div class="col-md-4">
   						<h3>Cars Menu</h3>
   						<ul>
-  							<li><a href="javascript:showScreen('CarsList');">All cars</a></li>
-  							<li><a href="javascript:showScreen('CarsNew');">New car</a></li>
+  							<li><a href="javascript:Screen.CarsList.open();">All cars</a></li>
+  							<li><a href="javascript:Screen.CarsNew.open();">New car</a></li>
   						</ul>
   					</div>
 					<div class="col-md-8">
@@ -232,13 +238,6 @@
 			</div>			
 		</section>
 
-		<section id="PlayersList" class="screen">
-			<h2>Player</h2>
-
-		</section>
-		<section id="PlayersEdit" class="screen">
-			<h2>New Player</h2>
-		</section>
 	</div>
 	<footer>&copy;2014 by Jakub Krajč</footer>
 </body>
