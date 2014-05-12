@@ -11,6 +11,7 @@
 	<script src="js/DataSync/DataSync.js"></script>
 	<script src="js/DataSync/SyncLogger.js"></script>
 	<script src="js/Data.js"></script>
+	<script src="js/AJAX.js"></script>
 	<script src="js/DataObject.js"></script>
 	<script src="js/Screen.js"></script>
 	<script src="js/ScreenObject.js"></script>
@@ -126,7 +127,8 @@
 			Screen.addObject('DashBoard','DashBoard');
 
 
-
+			Ajax = new AJAX();
+			Ajax.post('http://goodle.sk','auto=green', function(r){console.log(r);}, function(r){console.log(r);});
 
 
 			setTimeout(function(){
