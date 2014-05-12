@@ -14,6 +14,15 @@
 	<script src="js/DataObject.js"></script>
 	<script>
 	/*	----------------------------------
+		Some functions
+		---------------------------------- */
+
+		function clone(obj){
+			var a = JSON.parse(JSON.stringify(obj));
+			return a;
+		}
+
+	/*	----------------------------------
 		Screen logic
 		---------------------------------- */
 		function oSelect(){

@@ -1,7 +1,7 @@
 function Data(db){
 	//objects	
 	this.AJAX;
-	this.DataSync;	
+		
 
 	//properties
 	this.hasLS = false;
@@ -10,10 +10,11 @@ function Data(db){
 	//constructor
 	this.LStorage = new LocalStorage();
 	this.hasLS = this.LStorage.init(db);
+	this.DSync = new DataSync();
 
 	var self = this;
 
 	this.addObject = function(oName,table){
-		this[oName] = new DataObject(table,self.LStorage); 
+		this[oName] = new DataObject(table, self.LStorage, self.DSync); 
 	}
 }

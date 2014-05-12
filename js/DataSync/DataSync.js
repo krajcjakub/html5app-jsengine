@@ -4,7 +4,7 @@
 	---------------------------------- 
 */
 
-function DataSyncObj(){
+function DataSync(){
 	this.localChanges = new Array();
 	this.sl = new SyncLogger();
 	this.conected = false;
@@ -23,20 +23,22 @@ function DataSyncObj(){
 	this.addLocalChange = function(dataObj){
 		if(self.syncing==false){
 			self.localChanges.push(dataObj);
-			self.syncToRemote();
+			//self.syncToRemote();
 		}else{
 			self.localChanges.push(dataObj);
 		}
+
+		console.log(self.localChanges);
 	}
 
 	this.pushToRemote = function(dataObj,callback){
 		//TODO: realne ajaxové odoslanie na server
-		setTimeout(callback,1000);
+		//setTimeout(callback,1000);
 	}
 
 	this.pullFromRemote = function(){
 		//TODO: realne ajaxové stiahnutie so serveru
-		var data = [
+		/*var data = [
 			{'table':'cars', 'id':1, 'name':'Ferari'},
 			{'table':'cars', 'id':2, 'name':'Audi'},
 			{'table':'cars', 'id':3, 'name':'traktor'},
@@ -47,12 +49,12 @@ function DataSyncObj(){
 			{'table':'cars', 'id':3, 'name':'Seat'},
 			{'table':'cars', 'id':2, 'name':'Citroen'}
 		]; 
-		setTimeout(function(){self.syncToLocal(data);},1000);
+		setTimeout(function(){self.syncToLocal(data);},1000);*/
 	}
 
 	this.syncToRemote = function(){
 		//setSync to true
-		self.syncing = true; 
+		/*self.syncing = true; 
 
 		//wait for connection
 		if(self.conected==false){
@@ -71,13 +73,13 @@ function DataSyncObj(){
 				self.syncing = false;
 			}
 			return true;
-		}				
+		}*/				
 	}
 
 	this.syncToLocal = function(data){
 		//console.log(data);
-		for(i=0;i<data.length;i++){
+		/*for(i=0;i<data.length;i++){
 			window.LStorage.setQuietly(data[i]);
-		}
+		}*/
 	}
 }
