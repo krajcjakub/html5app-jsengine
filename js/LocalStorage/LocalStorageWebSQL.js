@@ -149,10 +149,10 @@ function LocalStorageWebSQL(models){
 		},function(e){
 			if (typeof okcallback !== "undefined") {
 				for(i=0;i<resDataObjs.length;i++){
-					var resDataObj = resDataObjs[i];	
-					//TODO: ak je toto asynchrónne, tak sa stihne resDataObj zmeniť na posledný skôr ako sa začne vykonávať
-					//prvý callback - teda vypíše N x poslený záznam			
-					okcallback(resDataObj);
+					var a = function (resDataObj){
+						setTimeout(function(){okcallback(resDataObj);},0);
+					}
+					a(resDataObjs[i]);
 				}
 			}
 		});
